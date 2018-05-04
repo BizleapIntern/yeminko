@@ -1,4 +1,4 @@
-package com.bizleap.training.exercises.monthMapBuilder;
+package com.bizleap.training.assignment;
 
 import java.util.ArrayList;
 import java.util.List;
