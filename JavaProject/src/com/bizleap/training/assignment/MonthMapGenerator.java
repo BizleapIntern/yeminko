@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 public class MonthMapGenerator {
 	private Map<Integer, Object> monthMap = new HashMap<Integer, Object>();
+	private Map<Integer, Object> yearMap=new HashMap<Integer,Object>();
 
 	private class Month {
 		private String name;
@@ -19,7 +20,7 @@ public class MonthMapGenerator {
 		}
 
 		public String toString() {
-			return this.year + "/" + this.name;
+			return this.name+" ";
 		}
 	}
 
@@ -75,6 +76,7 @@ public class MonthMapGenerator {
 		if (isValid(year)) {
 			for (Month month : createMonthsForYear(year)) {
 				addMonthToMap(month);
+				addYearToMap(month);
 			}
 		} else {
 			monthMap.put(year, "Year is invalid");
@@ -82,25 +84,6 @@ public class MonthMapGenerator {
 		return monthMap;
 	}
 
-	private List<Month> createMonthsForYearRange(int fromYear, int toYear) {
-		List<Month> monthList = new ArrayList<Month>();
-		for (int year = fromYear; year <= toYear; year++) {
-			monthList.addAll(createMonthsForYear(year));
-		}
-		return monthList;
-	}
-
-	public Map<Integer, Object> createMonthMapRange(int fromYear, int toYear) {
-		if (isValid(fromYear, toYear)) {
-			for (Month month : createMonthsForYearRange(fromYear, toYear)) {
-				addMonthToMap(month);
-			}
-		} else {
-			monthMap.put(fromYear, "Range or years are invalid");
-			monthMap.put(toYear, "Range or years are invalid");
-		}
-		return monthMap;
-	}
 
 	private void addMonthToMap(Month month) {
 		List<Month> monthList = (List<Month>) monthMap.get(month.numberOfDays);
@@ -110,6 +93,17 @@ public class MonthMapGenerator {
 			monthList = new ArrayList<Month>();
 			monthList.add(month);
 			monthMap.put(month.numberOfDays, monthList);
+		}
+	}
+	
+	private void addYearToMap(Month month) {
+		List<Month> yearList=(List<Month>) yearMap.get(month.year);
+		if(yearList!=null)
+			yearList.add(month);
+		else {
+			yearList=new ArrayList<Month>();
+			yearList.add(month);
+			yearMap.put(month.year, yearList);
 		}
 	}
 
@@ -122,10 +116,24 @@ public class MonthMapGenerator {
 			System.out.println();
 		}
 	}
+	
+	public void prettyPrint2() {
+		for (int monthKey : monthMap.keySet()) {
+			System.out.println("For " + monthKey + " Days");
+			for(int yearKey:yearMap.keySet()) {
+				System.out.print("Year : "+yearKey+" => ");
+				for (Month month : (List<Month>) monthMap.get(monthKey)) {
+					if(month.year==yearKey)
+						System.out.print(month);
+				}
+				System.out.println();
+			}
+		}
+	}
 
 	public static void main(String[] args) {
 		MonthMapGenerator monthMapGenerator = new MonthMapGenerator();
-		monthMapGenerator.createMonthMap(2001, 2002);
-		monthMapGenerator.prettyPrint();
+		monthMapGenerator.createMonthMap(2001,2002);
+		monthMapGenerator.prettyPrint2();
 	}
 }
